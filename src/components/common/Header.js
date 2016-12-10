@@ -3,12 +3,11 @@ import { Link, IndexLink } from 'react-router';
 
 const Header = () => {
 	return (
-		<nav>
-			<IndexLink to="/" activeClassName="active">Home</IndexLink>
-			{" | "}
-			<Link to="/courses" activeClassName="active">Courses</Link>
-			{" | "}
-			<Link to="/about" activeClassName="active">About</Link>
+		<nav className="navbar navbar-default navbar-fixed-top">
+			<div className="container">
+				<IndexLink to="/" activeClassName="nav-links-active" className="nav-links">Authentication</IndexLink>
+				<Link to="/product_list" activeClassName="nav-links-active" className="nav-links">Products</Link>
+			</div>
 		</nav>
 	);
 };
