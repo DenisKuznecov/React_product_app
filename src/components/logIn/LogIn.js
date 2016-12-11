@@ -2,6 +2,14 @@ import React from 'react';
 import { Link } from 'react-router';
 
 class LogIn extends React.Component {
+	constructor() {
+		super();
+
+		this.state = {
+			name: '0',
+			password: ''
+		};
+	}
 	render() {
 		return(
 			<div className="jumbotron">
