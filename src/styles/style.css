@@ -2,6 +2,34 @@ body {
 	padding-top: 70px;
 }
 
+.tooltip {
+	position: relative;
+	display: inline-flex;
+	width: 42%;
+	height: 31px;
+	opacity: 0;
+	align-items: center;
+	justify-content: center;
+	border-radius: 5px;
+	margin-left: 25px;
+	transition: opacity 0.2s;
+}
+
+.tooltip-success {
+	background-color: rgba(79, 230, 66, 0.7);
+	opacity: 1;
+}
+
+.tooltip-error {
+	background-color: rgba(227, 26, 26, 0.7);
+	opacity: 1;
+}
+
+.input-red {
+	border-color: #f92f2f;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255, 59, 59, 0.6);
+}
+
 /*Header style*/
 
 .nav-links {

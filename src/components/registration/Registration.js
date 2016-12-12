@@ -7,24 +7,79 @@ class Registration extends React.Component {
 		super();
 
 		this.state = {
-			register: {
-				username: ``,
-				password: ``
-			}
+			username: '',
+			password: '',
+			emptyField: {
+				borderColor: '#f92f2f',
+				boxShadow: 'inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255, 59, 59, 0.6)'
+			},
+			user: {},
+			tooltipClass: '',
+			tooltipText: ''
 		};
 		this.getUserData = this.getUserData.bind(this);
+		this.formValidate = this.formValidate.bind(this);
+		this.saveEnterData = this.saveEnterData.bind(this);
 	}
 
-	getUserData(e) {
-		e.preventDefault();
-		this.setState({
-			register: {
-				username: document.getElementById('username').value,
-				password: document.getElementById('password').value
+	saveEnterData(e) {
+		if(e.target.getAttribute('type') === 'text') {
+			this.setState({
+				username: e.target.value
+			});
+		} else {
+			this.setState({
+				password: e.target.value
+			});
+		}
+	}
+
+	formValidate(usernameField, passwordField) {
+		if(usernameField.value.length === 0) { //if username is empty
+			Object.assign(usernameField.style, this.state.emptyField);
+
+			if(passwordField.value.length === 0) { // if username and password empty
+				Object.assign(passwordField.style, this.state.emptyField);
 			}
-		}, () => {
-			api.request(`register/`, `POST`, JSON.stringify(this.state.register));
-		});
+		} else if(passwordField.value.length === 0) { //if password is empty
+			Object.assign(passwordField.style, this.state.emptyField);
+
+			if(usernameField.value.length === 0) { //if password and username is empty
+				Object.assign(usernameField.style, this.state.emptyField);
+			}
+		}
+	}
+
+	getUserData() {
+		const usernameField = this.refs.username;
+		const passwordField = this.refs.password;
+
+		usernameField.style = {};//reset style when click submit
+		passwordField.style = {};//reset style when click submit
+
+		if(usernameField.value.length !== 0 && passwordField.value.length !== 0) {
+			let registerObj = {
+				username: this.state.username,
+				password: this.state.password
+			};
+
+			api.post(`register/`, JSON.stringify(registerObj), (response) => {
+				this.setState({
+					user: response,
+					tooltipClass: 'tooltip-success',
+					tooltipText: 'You have successfully registered'
+				});
+				usernameField.value = '';
+				passwordField.value = '';
+			}, (error) => {
+				this.setState({
+					tooltipClass: 'tooltip-error',
+					tooltipText: 'Sorry, but there was an error. Try again.'
+				});
+			});
+		} else {
+			this.formValidate(usernameField, passwordField);//make inputs red if they are empty
+		}
 	}
 
 	render() {
@@ -35,13 +90,16 @@ class Registration extends React.Component {
 					<form>
 						<div className="form-group">
 							<label for="usr">Name:</label>
-							<input type="text" className="form-control" id="username" required/>
+							<input type="text" onChange={this.saveEnterData} className="form-control" ref="username" placeholder="username"/>
 						</div>
 						<div className="form-group">
 							<label for="pwd">Password:</label>
-							<input type="password" className="form-control" id="password" required/>
+							<input type="password" onChange={this.saveEnterData} className="form-control" ref="password" placeholder="password"/>
 						</div>
-						<button type="submit" onClick={this.getUserData} className="btn btn-primary">Sign Up</button>
+						<button type="button" onClick={this.getUserData} className="btn btn-primary">Sign Up</button>
+						<div className={`tooltip ${this.state.tooltipClass}`}>
+							{this.state.tooltipText}
+						</div>
 					</form>
 				</div>
 			</div>

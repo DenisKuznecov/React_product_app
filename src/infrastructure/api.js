@@ -1,7 +1,7 @@
 import Constants from './constants';
 
 const api = {
-	request: (action, method, data, done) => {
+	request: (action, method, data, done, err) => {
 		let xhr = new XMLHttpRequest();
 
 		xhr.open(method, Constants.hostUrl + action);
@@ -14,12 +14,18 @@ const api = {
 		}
 
 		xhr.addEventListener('load', (data) => {
-			console.log(JSON.parse(data.target.responseText));
+			done(JSON.parse(data.target.responseText));
 		});
 
 		xhr.addEventListener('error', (error) => {
-			console.log(error);
+			err(error);
 		});
+	},
+	get: (action, data, done, err) => {
+		api.request(action, 'GET', data, done, err);
+	},
+	post: (action, data, done, err) => {
+		api.request(action, 'POST', data, done, err);
 	}
 };
 
