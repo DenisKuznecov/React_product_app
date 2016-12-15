@@ -14,12 +14,14 @@ const api = {
 		}
 
 		xhr.addEventListener('load', (data) => {
+			console.log(data.target.responseText);
 			done(JSON.parse(data.target.responseText));
 		});
 
-		xhr.addEventListener('error', (error) => {
-			err(error);
-		});
+		// xhr.addEventListener('error', (error) => {
+		// 	console.log(error.target.responseText);
+		// 	err(error.target.responseText);
+		// });
 	},
 	get: (action, data, done, err) => {
 		api.request(action, 'GET', data, done, err);

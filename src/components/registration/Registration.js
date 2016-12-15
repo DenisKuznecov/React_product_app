@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import api from '../../infrastructure/api';
+import ApiUrls from '../../infrastructure/ApiUrls';
 
 class Registration extends React.Component {
 	constructor() {
@@ -17,6 +18,7 @@ class Registration extends React.Component {
 			tooltipClass: '',
 			tooltipText: ''
 		};
+		this.hideTooltip = this.hideTooltip.bind(this);
 		this.getUserData = this.getUserData.bind(this);
 		this.formValidate = this.formValidate.bind(this);
 		this.saveEnterData = this.saveEnterData.bind(this);
@@ -50,6 +52,12 @@ class Registration extends React.Component {
 		}
 	}
 
+	hideTooltip() {
+		this.setState({
+			tooltipClass: ''
+		});
+	}
+
 	getUserData() {
 		const usernameField = this.refs.username;
 		const passwordField = this.refs.password;
@@ -63,20 +71,27 @@ class Registration extends React.Component {
 				password: this.state.password
 			};
 
-			api.post(`register/`, JSON.stringify(registerObj), (response) => {
-				this.setState({
-					user: response,
-					tooltipClass: 'tooltip-success',
-					tooltipText: 'You have successfully registered'
-				});
-				usernameField.value = '';
-				passwordField.value = '';
-			}, (error) => {
-				this.setState({
-					tooltipClass: 'tooltip-error',
-					tooltipText: 'Sorry, but there was an error. Try again.'
-				});
-			});
+			api.post(`${ApiUrls.registerUrl}`, JSON.stringify(registerObj), (response) => {
+					if(response.success === true) {
+						this.setState({
+							user: response,
+							tooltipClass: ' tooltip-success',
+							tooltipText: 'You have successfully registered'
+						});
+
+						usernameField.value = '';
+						passwordField.value = '';
+					} else {
+						this.setState({
+							tooltipClass: ' tooltip-error',
+							tooltipText: 'Sorry, but there was an error. Try again.'
+						});
+					}
+					setTimeout(() => {
+						this.hideTooltip();
+					}, 2000);
+				}
+			);
 		} else {
 			this.formValidate(usernameField, passwordField);//make inputs red if they are empty
 		}
@@ -90,14 +105,14 @@ class Registration extends React.Component {
 					<form>
 						<div className="form-group">
 							<label for="usr">Name:</label>
-							<input type="text" onChange={this.saveEnterData} className="form-control" ref="username" placeholder="username"/>
+							<input type="text" onChange={this.saveEnterData} className="form-control" id="usr" ref="username" placeholder="username"/>
 						</div>
 						<div className="form-group">
 							<label for="pwd">Password:</label>
-							<input type="password" onChange={this.saveEnterData} className="form-control" ref="password" placeholder="password"/>
+							<input type="password" onChange={this.saveEnterData} className="form-control" id="pwd" ref="password" placeholder="password"/>
 						</div>
 						<button type="button" onClick={this.getUserData} className="btn btn-primary">Sign Up</button>
-						<div className={`tooltip ${this.state.tooltipClass}`}>
+						<div className={`tooltip${this.state.tooltipClass}`}>
 							{this.state.tooltipText}
 						</div>
 					</form>

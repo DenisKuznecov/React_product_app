@@ -9,7 +9,9 @@ class App extends React.Component {
 					<Header/>
 				</header>
 				<div className="container">
-					{this.props.children}
+					{ this.props.children }
+					{/*&& React.cloneElement(this.props.children, {*/}
+						{/*vasya: this.vasya)}*/}
 				</div>
 			</div>
 		);
